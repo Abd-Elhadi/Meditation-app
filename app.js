@@ -3,18 +3,49 @@ const app = () => {
     const play = document.querySelector('.play');
     const outline = document.querySelector('.moving-outline circle');
     const video = document.querySelector('.vid-container video');
+
+    // Sounds
     const sounds = document.querySelectorAll('.sound-picker button');
+
+    //Time display
     const tmieDisplay = document.querySelector('.time-display');
+    const timeSelect = document.querySelectorAll('.time-select button');
+
+    // Get the length of the outline
     const outlineLength = outline.getTotalLength();
-    let fakeDuration = 60;
+
+    // Duration
+    let fakeDuration = 120;
 
     outline.style.strokeDasharray = outlineLength;
     outline.style.strokeDashoffset = outlineLength;
+
+    // Pick different sounds
+    sounds.forEach(sound => {
+        sound.addEventListener('click', function() {
+            song.src = this.getAttribute('data-sound');
+            video.src = this.getAttribute('data-video');
+            checkPlaying(song);
+        })
+    })
 
     // play sound
     play.addEventListener('click', () => {
         checkPlaying(song);
     });
+
+    // Select sound
+    timeSelect.forEach(option => {
+        option.addEventListener('click', function () {
+            fakeDuration = this.getAttribute('data-time');
+            let seconds = Math.floor(fakeDuration % 60);
+            seconds = seconds > 0 ? seconds : '00';
+            let minutes = Math.floor(fakeDuration / 60);
+            console.log(seconds);
+            console.log(minutes);
+            tmieDisplay.textContent = `${minutes}:${seconds}`;
+        })
+    })
 
     // Create a function specific to stop and play the sounds
     const checkPlaying = song => {
@@ -42,6 +73,13 @@ const app = () => {
 
         // Animate the text
         tmieDisplay.textContent = `${minutes}:${seconds}`
+
+        if (currentTime >= fakeDuration) {
+            song.pause();
+            song.currentTime = 0;
+            play.src = './svg/play.svg';
+            video.pause();
+        }
     };
 
 
